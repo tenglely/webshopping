@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						   http://www.springframework.org/schema/beans/spring-beans-4.2.xsd 
+						   http://www.springframework.org/schema/context 
+						   http://www.springframework.org/schema/context/spring-context.xsd 
+						   http://www.springframework.org/schema/aop 
+						   http://www.springframework.org/schema/aop/spring-aop-4.2.xsd 
+						   http://www.springframework.org/schema/tx 
+						   http://www.springframework.org/schema/tx/spring-tx.xsd" 
+						   xmlns:tx="http://www.springframework.org/schema/tx" 
+						   xmlns:aop="http://www.springframework.org/schema/aop" 
+						   xmlns:context="http://www.springframework.org/schema/context" 
+						   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+						   xmlns="http://www.springframework.org/schema/beans">
+    	
+   	<!--数据源配置-->
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <property name="driverClass" value="com.mysql.cj.jdbc.Driver"></property>
+        <property name="jdbcUrl" value="jdbc:MySQL://localhost:3306/shopping?serverTimezone=UTC"/>
+        <property name="user" value="root"/>
+        <property name="password" value="123456"/>
+        <property name="initialPoolSize" value="3"/>
+        <property name="maxPoolSize" value="20"/>
+        <property name="minPoolSize" value="1"/>
+        <property name="checkoutTimeout" value="2000"/>
+        <property name="maxIdleTime" value="60"/>
+    </bean>
+    
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <!--hibernate常用配置-->
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+                <prop key="hibernate.show_sql">true</prop>
+                <prop key="hibernate.hbm2ddl.auto">validate</prop>
+            </props>
+        </property>
+        <!--映射文件配置-->
+        <property name="mappingResources">
+            <list>
+                <value>com/shopping/model/buy.hbm.xml</value>
+                <value>com/shopping/model/client.hbm.xml</value>
+                <value>com/shopping/model/message.hbm.xml</value>
+                <value>com/shopping/model/photo.hbm.xml</value>
+                <value>com/shopping/model/shop.hbm.xml</value>
+            </list>
+        </property>
+    </bean>
+    
+    <!--事务配置-->
+    <!--配置事务管理器类-->   
+    <bean id="txManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory"/>
+    </bean>
+    <!--配置事务增强-->
+    <tx:advice id="txAdvice" transaction-manager="txManager">
+        <tx:attributes>
+            <tx:method name="save*" propagation="REQUIRED"/>
+          	<tx:method name="delete*" propagation="REQUIRED"/>
+          	<tx:method name="update*" propagation="REQUIRED"/>
+        </tx:attributes>
+    </tx:advice>
+
+    <!--aop配置-->
+    <aop:config  proxy-target-class="true">
+        <aop:pointcut id="pt" expression="execution(* com.shopping.service.impl.*.*(..))"/>
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="pt"/>
+    </aop:config>
+    
+     <!-- 配置Dao层 -->
+    <bean id="buyDao" class="com.shopping.dao.impl.BuyDaoImpl">
+    	<property name="sessionFactory" ref="sessionFactory"></property>
+    </bean>
+    
+    <bean id="clientDao" class="com.shopping.dao.impl.ClientDaoImpl">
+    	<property name="sessionFactory" ref="sessionFactory"></property>
+    </bean>
+    
+    <bean id="shopDao" class="com.shopping.dao.impl.ShopDaoImpl">
+    	<property name="sessionFactory" ref="sessionFactory"></property>
+    </bean>
+    
+     <bean id="messageDao" class="com.shopping.dao.impl.MessageDaoImpl">
+    	<property name="sessionFactory" ref="sessionFactory"></property>
+    </bean>
+    
+    <bean id="photoDao" class="com.shopping.dao.impl.PhotoDaoImpl">
+    	<property name="sessionFactory" ref="sessionFactory"></property>
+    </bean>
+    
+     <!-- 配置service层 -->
+    <bean id="buyService" class="com.shopping.service.impl.BuyServiceImpl">
+    	<property name="buyDao" ref="buyDao"></property>
+    </bean>
+    
+    <bean id="clientService" class="com.shopping.service.impl.ClientServiceImpl">
+    	<property name="clientDao" ref="clientDao"></property>
+    </bean>
+    
+    <bean id="shopService" class="com.shopping.service.impl.ShopServiceImpl">
+    	<property name="shopDao" ref="shopDao"></property>
+    </bean>
+    
+    <bean id="messageService" class="com.shopping.service.impl.MessageServiceImpl">
+    	<property name="messageDao" ref="messageDao"></property>
+    </bean>
+    
+    <bean id="photoService" class="com.shopping.service.impl.PhotoServiceImpl">
+    	<property name="photoDao" ref="photoDao"></property>
+    </bean>
+    
+    <!-- 配置action层 -->
+    <bean id="buyAction" class="com.shopping.action.BuyAction" scope="prototype">
+    	<property name="buyService" ref="buyService"></property>
+    </bean>
+    
+    <bean id="clientAction" class="com.shopping.action.ClientAction" scope="prototype">
+    	<property name="clientService" ref="clientService"></property>
+    </bean>
+    
+     <bean id="shopAction" class="com.shopping.action.ShopAction" scope="prototype">
+    	<property name="shopService" ref="shopService"></property>
+    </bean>
+    
+    <bean id="messageAction" class="com.shopping.action.MessageAction" scope="prototype">
+    	<property name="messageService" ref="messageService"></property>
+    </bean>
+    
+    <bean id="photoAction" class="com.shopping.action.PhotoAction" scope="prototype">
+    	<property name="photoService" ref="photoService"></property>
+    </bean>
+</beans>    

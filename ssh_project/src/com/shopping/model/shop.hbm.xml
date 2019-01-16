@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.shopping.model">
+    
+    <class name="Shop" table="shop">
+
+    	<id name="sno" column="sno">
+    		<generator class="increment"></generator>
+    	</id>
+    	<property name="sfname" column="sfname"></property>
+    	<property name="shopname" column="shopname"></property>
+    	<property name="shopclass" column="shopclass"></property>
+    	<property name="sclass" column="sclass"></property>
+    	<property name="size" column="size"></property>
+    	<property name="price" column="price"></property>
+    	<property name="count" column="count"></property>
+    	<property name="remark" column="remark"></property>
+    </class>
+
+
+</hibernate-mapping>

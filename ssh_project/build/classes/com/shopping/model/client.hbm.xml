@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.shopping.model">
+    
+    <class name="Client" table="client">
+    	
+    	<id name="cno" column="cno">
+    		<generator class="increment"></generator>
+    	</id>
+    	<property name="cname" column="cname"></property>
+    	<property name="cpassword" column="cpassword"></property>
+    	<property name="cclass" column="cclass"></property>
+    	<property name="csex" column="csex"></property>
+    	<property name="cage" column="cage"></property>
+    	<property name="cphone" column="cphone"></property>
+    	<property name="caddress" column="caddress"></property>
+    </class>
+
+
+</hibernate-mapping>

@@ -1,0 +1,388 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN" "http://struts.apache.org/dtds/struts-2.0.dtd" >
+<struts>
+    <constant name="struts.configuration.xml.reload" value="true"/>
+    <constant name="struts.serve.static.browserCache" value="false"></constant>
+    <constant name="struts.i18n.encoding" value="UTF-8"/>
+    <constant name="struts.multipart.maxSize" value="10485760"/>
+    
+    <package name="default" namespace="/user" extends="struts-default">
+    	<global-results>
+	    	<result name="error">/myerror.jsp</result>
+	    </global-results>
+	    
+	    <!-- 添加商品信息 -->
+	    <action name="addshop" class="shopAction" method="addShop">
+	    	<result name="addshop">
+	    		/manager/addphoto.jsp
+	    	</result>
+	    </action>
+	    <!-- 添加商品图片 -->
+	    <action name="multiUpload" class="photoAction" method="execute">
+	   		<result name="success">
+	   			/addmessage.jsp
+	   		</result>
+	   		<result name="setindex">
+	   			/manager/setindex.jsp
+	   		</result>
+	   	</action>
+	   	<!-- 添加商品图文信息 -->
+	   	<action name="messageadd" class="messageAction" method="addMessage">
+	    	<result name="addmessage" type="redirectAction">
+	    		seeallshop
+	    	</result>
+	    	<result name="success" type="redirectAction">
+	   			seeallshop
+	   		</result>
+	    </action>
+	    
+	    <!-- 查看所有商品 -->
+	   	<action name="seeallshop" class="shopAction" method="seeallshop">
+	    	<result name="success" >
+	    		/manager/see-shop.jsp
+	    	</result>
+	    </action>
+	   	
+	   	<!-- 浏览一件商品的信息、图片、介绍图文 -->
+	   	<action name="seeoneshop" class="shopAction" method="seeOne">
+	    	<result name="success" type="redirectAction">
+	    		seeonephoto
+	    	</result>
+	    </action>
+	    <action name="seeonephoto" class="photoAction" method="seeOnePhoto">
+	    	<result name="success" type="redirectAction">
+	    		seeonemessage
+	    	</result>
+	    </action>
+	    <action name="seeonemessage" class="messageAction" method="seeOneMessage">
+	    	<result name="manager">
+	    		/manager/see-test.jsp
+	    	</result>
+	    	<result name="client">
+	    		/client/see-shop.jsp
+	    	</result>
+	    </action>
+	    
+	    <!-- 查询商品 -->
+	    <action name="searchshop" class="shopAction" method="searchshop">
+	    	<result name="success" >
+	    		/manager/see-shop.jsp
+	    	</result>
+	    </action>
+	    
+	    <!-- 删除一件商品及其订单，如果该商品所有尺码都删了，删除图片和图文-->
+	    <action name="deletebuysno" class="buyAction" method="deletebuysno">
+	    	<result name="success" type="redirectAction">
+	    		deleteshop
+	    	</result>
+	    </action>
+	    <!-- 接上面 -->
+	    <action name="deleteshop" class="shopAction" method="deleteshop">
+	    	<result name="success" type="redirectAction">
+	    		seeallshop
+	    	</result>
+	    	<result name="next" type="redirectAction">
+	    		deletephoto
+	    	</result>
+	    </action>
+	    <!-- 接上面 -->
+	     <action name="deletephoto" class="photoAction" method="deletephoto">
+	    	<result name="next" type="redirectAction">
+	    		deletemessage
+	    	</result>
+	    </action>
+	    <!-- 接上面 -->
+	    <action name="deletemessage" class="messageAction" method="deletemessage">
+	    	<result name="success" type="redirect">
+	    		user/seeallshop
+	    	</result>
+	    </action>
+	    
+	    <!-- 查找一条商品信息 -->
+	    <action name="getoneshop" class="shopAction" method="getoneshop">
+	    	<result name="success">
+	    		/manager/updateshop.jsp
+	    	</result>
+	    </action>
+	    
+	     <!-- 查找一条商品信息到支付 -->
+	    <action name="seepayshop" class="shopAction" method="seepayshop">
+	    	<result name="success">
+	    		/pay/indexpay.jsp
+	    	</result>
+	    </action>
+	    
+	     <!-- 修改一种商品信息 ,修改商品名后photo和message的也要改-->
+	    <action name="updateshop" class="shopAction" method="updateshop">
+	    	<result name="success" type="redirectAction"> 
+	    		updatephotoshopname
+	    	</result>
+	    </action>
+	    <!-- 接上 -->
+	    <action name="updatephotoshopname" class="photoAction" method="updatephotoshopname">
+	    	<result name="success" type="redirectAction"> 
+	    		updatemessageshopname
+	    	</result>
+	    </action>
+	    <!-- 接上 -->
+	    <action name="updatemessageshopname" class="messageAction" method="updatemessageshopname">
+	    	<result name="success" type="redirectAction"> 
+	    		seeallshop
+	    	</result>
+	    </action>
+	    
+	    <!-- 修改一条商品信息的库存 -->
+	    <action name="updateshopcount" class="shopAction" method="updateshopcount">
+	    	<result name="success" type="redirectAction"> 
+	    		seeallshop
+	    	</result>
+	    </action>
+	   	
+	   	<!-- 查找所有用户信息 -->
+	   	<action name="seeallclient" class="clientAction" method="seeallclient">
+	    	<result name="success">
+	    		/manager/see-client.jsp
+	    	</result>
+	    </action>
+	    
+	    <!-- 查询用户 -->
+	    <action name="searchclient" class="clientAction" method="searchclient">
+	    	<result name="success">
+	    		/manager/see-client.jsp
+	    	</result>
+	    </action>
+	    
+	    <!-- 删除一条用户信息 -->
+	    <action name="deleteclient" class="clientAction" method="deleteclient">
+	    	<result name="success" type="redirectAction">
+	    		seeallclient
+	    	</result>
+	    </action>
+	    
+	    <!-- 用户登陆 -->
+	   	 <action name="clientlogin" class="clientAction" method="clientlogin">
+	    	<result name="client">
+	    		/index.jsp;
+	    	</result>
+	    	<result name="manager" type="redirectAction">
+	    		outputshop
+	    	</result>
+	    	<result name="loginfalse">
+	    		/client/login.jsp
+	    	</result>
+	    </action>
+	    
+	    <!-- 添加用户 -->
+	    <action name="addclient" class="clientAction" method="addclient">
+	    	<result name="success">
+	    		/index.jsp;
+	    	</result>
+	    </action>
+	    
+	    <!-- 查找一条用户信息，用于修改 -->
+	    <action name="findoneclient" class="clientAction" method="findoneclient">
+	    	<result name="success">
+	    		/client/updateclient.jsp
+	    	</result>
+	    </action>
+	    
+	    <!-- 修改一条用户信息 -->
+    	<action name="updateclient" class="clientAction" method="updateclient">
+	    	<result name="manager">
+	    		/manager/main.jsp
+	    	</result>
+	    	<result name="client" type="redirectAction">
+	    		findindexshop
+	    	</result>
+	    </action>
+	    
+    	<!-- 获取所有订单 -->
+	   <action name="getallBuy" class="buyAction" method="seeAll">
+	   		<result name="seeall">
+	   		    /manager/see-buy.jsp
+	   		</result>
+	   </action>  
+	   
+	   <!-- 查询订单 -->
+	   <action name="searchbuy" class="buyAction" method="searchbuy">
+	   		<result name="success">
+	   		    /manager/see-buy.jsp
+	   		</result>
+	   </action> 
+	   
+	   <!-- 删除一条订单信息 -->
+	   <action name="deletebuy" class="buyAction" method="deletebuy">
+	   		<result name="success" type="redirectAction">
+	   		    getallBuy
+	   		</result>
+	   </action> 
+	   
+	   <!-- 查看一条订单信息 -->
+	   <action name="getonebuy" class="buyAction" method="getonebuy">
+	   		<result name="success">
+	   		    /manager/updatebuy.jsp
+	   		</result>
+	   		<result name="readypay" type="redirectAction">
+	   		    seepayshop
+	   		</result>
+	   </action> 
+	   
+	   <action name="paybuy" class="buyAction" method="paybuy">
+	   		<result name="readypay" type="redirectAction">
+	   		    seepayshop
+	   		</result>
+	   </action> 
+	   
+	   <!-- 修改一条订单信息 -->
+	   <action name="updatebuy" class="buyAction" method="updatebuy">
+	   		<result name="success" type="redirectAction">
+	   		    getallBuy
+	   		</result>
+	   </action> 
+	   
+	   <!-- 支付完成，修改订单支付状态 -->
+	   <action name="updatepaybuy" class="buyAction" method="updatepaybuy">
+	   		<result name="success" type="redirectAction">
+	   		    updatecount
+	   		</result>
+	   </action> 
+	   
+	     <action name="updatecount" class="shopAction" method="updatecount">
+	   		<result name="success" type="redirectAction">
+	   		    findindexshop
+	   		</result>
+	   </action> 
+	   
+	   
+	   <!-- 获取商城首页的图片信息和登陆信息 和列表栏信息-->
+	   <action name="findindexshop" class="shopAction" method="findindexshop">
+	   		<result name="success" type="redirectAction">
+	   		   seeshopping
+	   		</result>
+	   </action>
+	    <!-- 跟上 -->
+	    <action name="seeshopping" class="photoAction" method="seeshopping">
+	   		<result name="success" type="redirectAction">
+	   		    getshopmessage
+	   		</result>
+	   </action>
+	   <!-- 跟上面，取商品信息，用来比较列表栏中的商品是否存在 -->
+	    <action name="getshopmessage" class="shopAction" method="getshopmessage">
+	   		<result name="success" type="redirectAction">
+	   		   watchlist
+	   		</result>
+	   </action>
+	   <!-- 跟上 -->
+	    <action name="watchlist" class="messageAction" method="watchlist">
+	   		<result name="success">
+	   		   /client/shopping.jsp
+	   		</result>
+	   </action>
+	   
+	   <!-- 修改一种商品图片 -->
+	   <action name="updatephoto" class="photoAction" method="updatephoto">
+	   		<result name="success" type="redirectAction">
+	   		    seeallshop
+	   		</result>
+	   </action>
+	   
+	   <!-- 编辑首页列表 -->
+	   <action name="updatelist" class="messageAction" method="updatelist">
+	   		<result name="success">
+	   		    /manager/setlist.jsp
+	   		</result>
+	   </action>
+	   
+	   <!-- 点击编辑列表后，获取之前的数据 -->
+	   <action name="seelist" class="messageAction" method="seelist">
+	   		<result name="success">
+	   		     /manager/setlist.jsp
+	   		</result>
+	   </action>
+	   
+	   <!-- 首页点击列表栏的品牌或商品种类后获取商品数据，图片信息 -->
+	   <action name="findlistbysfname" class="shopAction" method="findlistbysfname">
+	   		<result name="success" type="redirectAction">
+	   		    findlistbysfname_photo
+	   		</result>
+	   </action>
+	    <action name="findlistbyshopclass" class="shopAction" method="findlistbyshopclass">
+	   		<result name="success" type="redirectAction">
+	   		    findlistbysfname_photo
+	   		</result>
+	   </action>
+	   <action name="findlistbysfname_photo" class="photoAction" method="findlistbysfname_photo">
+	   		<result name="success">
+	   		    /client/see-sfname.jsp
+	   		</result>
+	   </action>
+	   
+	   <!-- 添加购物车 -->
+	   <action name="addshoppingcar" class="buyAction" method="addshoppingcar">
+	   		<result name="success" type="redirectAction">
+	   		    getbuyshop
+	   		</result>
+	   </action>
+	   <!-- 获取购物车的商品信息 -->
+	   <action name="getbuyshop" class="shopAction" method="getbuyshop">
+	   		<result name="success" type="redirectAction">
+	   		    getbuyphoto
+	   		</result>
+	   </action>
+	   <!-- 获取购物车商品图片 -->
+	   <action name="getbuyphoto" class="photoAction" method="getbuyphoto">
+	   		<result name="buycar">
+	   		    /client/shoppingcar.jsp
+	   		</result>
+	   		<result name="history">
+	   		    /client/history.jsp
+	   		</result>
+	   </action>
+	   
+	   <!-- 查看购物车 -->
+	   <action name="seeshoppingcar" class="buyAction" method="seeshoppingcar">
+	   		<result name="success" type="redirectAction">
+	   		    getbuyshop
+	   		</result>
+	   </action>
+	   
+	   <!-- 顾客删除购物车订单 -->
+	   <action name="deletecarbuy" class="buyAction" method="deletecarbuy">
+	   		<result name="success" type="redirectAction">
+	   		    getbuyshop
+	   		</result>
+	   </action>
+	   
+	   <!-- 顾客修改购物车订单收货地址 -->
+	   <action name="updatecarbuy" class="buyAction" method="updatecarbuy">
+	   		<result name="success" type="redirectAction">
+	   		    getbuyshop
+	   		</result>
+	   </action>
+  
+	   <!-- 支付商品 -->
+	   <action name="payshop" class="buyAction" method="payshop">
+	   		<result name="success">
+	   		    /client/payshopping.jsp
+	   		</result>
+	   </action>
+	   
+	   <!-- main.jsp获取数据，用于展示和输出数据报表 -->
+	   <action name="outputshop" class="shopAction" method="outputshop">
+	   		<result name="success" type="redirectAction">
+	   		    outputclient
+	   		</result>
+	   </action>
+	    <action name="outputclient" class="clientAction" method="outputclient">
+	   		<result name="success" type="redirectAction">
+	   		    outputbuy
+	   		</result>
+	   </action>
+	    <action name="outputbuy" class="buyAction" method="outputbuy">
+	   		<result name="success" type="redirect">
+	   		    /manager/indexA.jsp
+	   		</result>
+	   </action>
+	   
+	</package>
+</struts>
